@@ -1,0 +1,31 @@
+display_name: "test-subscription"
+workload_type: "Production"
+management_group_id: "corp"
+location: "japaneast"
+
+tags:
+  environment: "test"
+  cost_center: "test-12345"
+  owner: "platform-team"
+
+resource_groups:
+  network:
+    name: "rg-test-network"
+    location: "japaneast"
+  application:
+    name: "rg-test-app"
+    location: "japaneast"
+
+virtual_network:
+  name: "vnet-test"
+  resource_group_name: "rg-test-network"
+  address_space: ["10.200.0.0/16"]
+  hub_peering_enabled: true
+  use_hub_gateway: false
+  subnets:
+    - name: "snet-app"
+      address_prefix: "10.200.1.0/24"
+    - name: "snet-data"
+      address_prefix: "10.200.2.0/24"
+    - name: "snet-web"
+      address_prefix: "10.200.3.0/24"
