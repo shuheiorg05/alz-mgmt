@@ -13,10 +13,12 @@ policy_assignments_to_remove: [
   # Deploy-VMSS-Monitoring,
 ]
 policy_definitions_to_add: [
-  IaC-Compliance-Initiative
+  Audit-Non-Terraform-Resources
 ]
 policy_definitions_to_remove: []
-policy_set_definitions_to_add: []
+policy_set_definitions_to_add: [
+  IaC-Compliance-Initiative
+]
 policy_set_definitions_to_remove: []
 role_definitions_to_add: []
 role_definitions_to_remove: []
