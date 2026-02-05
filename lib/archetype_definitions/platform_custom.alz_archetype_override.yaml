@@ -1,6 +1,8 @@
 base_archetype: platform
 name: platform_custom
-policy_assignments_to_add: []
+policy_assignments_to_add: [
+  Assign-IaC-Compliance
+]
 policy_assignments_to_remove: [
 # To disable AMA policies, uncomment the following lines:
   # DenyAction-DeleteUAMIAMA,
@@ -12,13 +14,9 @@ policy_assignments_to_remove: [
   # Deploy-VMSS-ChangeTrack,
   # Deploy-VMSS-Monitoring,
 ]
-policy_definitions_to_add: [
-  Audit-Non-Terraform-Resources
-]
+policy_definitions_to_add: []
 policy_definitions_to_remove: []
-policy_set_definitions_to_add: [
-  IaC-Compliance-Initiative
-]
+policy_set_definitions_to_add: []
 policy_set_definitions_to_remove: []
 role_definitions_to_add: []
 role_definitions_to_remove: []
