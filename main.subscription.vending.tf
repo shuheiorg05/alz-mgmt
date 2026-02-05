@@ -106,7 +106,24 @@ resource "azapi_resource" "resource_group" {
   ]
 }
 
-# 手順8: VNetの作成
+# 手順8: リソースプロバイダーの登録
+# 新しいサブスクリプションではMicrosoft.Networkが登録されていないため、
+# VNet作成前に登録が必要
+resource "azapi_resource_action" "register_network_provider" {
+  for_each = local.subscriptions
+
+  type        = "Microsoft.Resources/providers@2022-09-01"
+  resource_id = "/subscriptions/${azurerm_subscription.this[each.key].subscription_id}/providers/Microsoft.Network"
+  action      = "register"
+  method      = "POST"
+
+  depends_on = [
+    azurerm_subscription.this,
+    azurerm_role_assignment.alias_plan
+  ]
+}
+
+# 手順9: VNetの作成
 locals {
   # VNetが定義されているサブスクリプションを抽出
   vnets = {
@@ -140,7 +157,8 @@ resource "azapi_resource" "virtual_network" {
 
   depends_on = [
     azapi_resource.resource_group,
-    azurerm_subscription.this
+    azurerm_subscription.this,
+    azapi_resource_action.register_network_provider
   ]
 }
 
@@ -177,7 +195,7 @@ resource "azapi_resource" "subnet" {
   depends_on = [azapi_resource.virtual_network]
 }
 
-# 手順10: Hub VNetへのピアリング
+# 手順11: Hub VNetへのピアリング
 locals {
   # Hub接続が必要なVNetを抽出
   # Hub VNet情報は既存のhub_and_spoke_vnetモジュールから自動取得
