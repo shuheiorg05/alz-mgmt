@@ -163,7 +163,47 @@ resource "azapi_resource" "virtual_network" {
   ]
 }
 
-# 手順9: サブネットの作成
+# 手順10: NSGの作成
+locals {
+  # 全VNetのサブネット用NSGをフラット化
+  nsgs = merge([
+    for sub_key, vnet in local.vnets : {
+      for subnet in lookup(vnet, "subnets", []) :
+      "${sub_key}-${subnet.name}" => {
+        name                = "nsg-${subnet.name}"
+        vnet_name           = vnet.name
+        resource_group_name = vnet.resource_group_name
+        subscription_id     = vnet.subscription_id
+        location            = vnet.location
+        tags                = vnet.tags
+      }
+    }
+  ]...)
+}
+
+resource "azapi_resource" "nsg" {
+  for_each = local.nsgs
+
+  type      = "Microsoft.Network/networkSecurityGroups@2024-01-01"
+  name      = each.value.name
+  location  = each.value.location
+  parent_id = "/subscriptions/${each.value.subscription_id}/resourceGroups/${each.value.resource_group_name}"
+
+  body = {
+    properties = {
+      securityRules = []
+    }
+  }
+
+  tags = each.value.tags
+
+  depends_on = [
+    azapi_resource.resource_group,
+    azapi_resource_action.register_network_provider
+  ]
+}
+
+# 手順11: サブネットの作成
 locals {
   # 全VNetのサブネットをフラット化
   subnets = merge([
@@ -175,6 +215,7 @@ locals {
         resource_group_name = vnet.resource_group_name
         address_prefix      = subnet.address_prefix
         subscription_id     = vnet.subscription_id
+        nsg_key             = "${sub_key}-${subnet.name}"
       }
     }
   ]...)
@@ -190,13 +231,19 @@ resource "azapi_resource" "subnet" {
   body = {
     properties = {
       addressPrefix = each.value.address_prefix
+      networkSecurityGroup = {
+        id = azapi_resource.nsg[each.value.nsg_key].id
+      }
     }
   }
 
-  depends_on = [azapi_resource.virtual_network]
+  depends_on = [
+    azapi_resource.virtual_network,
+    azapi_resource.nsg
+  ]
 }
 
-# 手順11: Hub VNetへのピアリング
+# 手順12: Hub VNetへのピアリング
 locals {
   # Hub接続が必要なVNetを抽出
   # Hub VNet情報は既存のhub_and_spoke_vnetモジュールから自動取得
