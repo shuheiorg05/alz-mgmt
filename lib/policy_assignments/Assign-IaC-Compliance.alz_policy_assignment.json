@@ -8,7 +8,7 @@
     "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/IaC-Compliance-Initiative",
     "parameters": {
       "auditNonTerraformEffect": {
-        "value": "Audit"
+        "value": "Deny"
       }
     },
     "nonComplianceMessages": [
