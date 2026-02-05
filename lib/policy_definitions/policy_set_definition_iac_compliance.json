@@ -1,0 +1,47 @@
+{
+  "name": "IaC-Compliance-Initiative",
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2021-06-01",
+  "properties": {
+    "displayName": "IaC準拠チェックポリシーセット",
+    "description": "Terraform等のIaCツールで管理されていないリソースを検出するポリシーセット",
+    "policyType": "Custom",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0",
+      "source": "Custom"
+    },
+    "parameters": {
+      "auditNonTerraformEffect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "非Terraformリソース検出の効果",
+          "description": "deployed_byタグがterraformでないリソースに対するアクション"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "AuditNonTerraformResources",
+        "policyDefinitionName": "Audit-Non-Terraform-Resources",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('auditNonTerraformEffect')]"
+          },
+          "tagName": {
+            "value": "deployed_by"
+          },
+          "tagValue": {
+            "value": "terraform"
+          }
+        }
+      }
+    ]
+  }
+}

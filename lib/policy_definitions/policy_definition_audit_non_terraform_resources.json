@@ -1,0 +1,64 @@
+{
+  "name": "Audit-Non-Terraform-Resources",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "apiVersion": "2021-06-01",
+  "properties": {
+    "displayName": "Terraform以外で作成されたリソースを検出",
+    "description": "deployed_byタグの値が'terraform'でないリソースを検出します。IaC運用の徹底に活用できます。",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0",
+      "source": "Custom"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "監査のみ、または作成を拒否"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "タグ名",
+          "description": "チェック対象のタグ名"
+        },
+        "defaultValue": "deployed_by"
+      },
+      "tagValue": {
+        "type": "String",
+        "metadata": {
+          "displayName": "期待するタグ値",
+          "description": "このタグ値を持つリソースは準拠とみなされます"
+        },
+        "defaultValue": "terraform"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "exists": "false"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "notEquals": "[parameters('tagValue')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}
