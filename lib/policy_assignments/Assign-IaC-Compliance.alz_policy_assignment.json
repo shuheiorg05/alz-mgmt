@@ -1,0 +1,25 @@
+{
+  "name": "Assign-IaC-Compliance",
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "properties": {
+    "displayName": "IaC準拠チェックポリシー割り当て",
+    "description": "Terraform等のIaCツールで管理されていないリソースを検出します",
+    "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/placeholder/providers/Microsoft.Authorization/policySetDefinitions/IaC-Compliance-Initiative",
+    "parameters": {
+      "auditNonTerraformEffect": {
+        "value": "Audit"
+      }
+    },
+    "nonComplianceMessages": [
+      {
+        "message": "このリソースはTerraformで管理されていません。deployed_byタグにterraformを設定してください。"
+      }
+    ],
+    "enforcementMode": "Default"
+  },
+  "location": "japaneast",
+  "identity": {
+    "type": "None"
+  }
+}
