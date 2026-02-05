@@ -216,6 +216,7 @@ locals {
         address_prefix      = subnet.address_prefix
         subscription_id     = vnet.subscription_id
         nsg_key             = "${sub_key}-${subnet.name}"
+        vnet_key            = sub_key
       }
     }
   ]...)
@@ -236,6 +237,9 @@ resource "azapi_resource" "subnet" {
       }
     }
   }
+
+  # VNet単位で排他制御（同一VNetへのサブネット操作は順次実行される）
+  locks = [azapi_resource.virtual_network[each.value.vnet_key].id]
 
   depends_on = [
     azapi_resource.virtual_network,
