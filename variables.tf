@@ -121,3 +121,49 @@ telemetry_additional_content = {
 }
 DESCRIPTION
 }
+
+# ========================================
+# Subscription Vending用の変数を追加
+# ========================================
+
+variable "billing_account_name" {
+  type        = string
+  description = "The Billing Account name for MCA subscription creation"
+  default     = null
+}
+
+variable "billing_profile_name" {
+  type        = string
+  description = "The Billing Profile name for MCA subscription creation"
+  default     = null
+}
+
+variable "invoice_section_name" {
+  type        = string
+  description = "The Invoice Section name for MCA subscription creation"
+  default     = null
+}
+
+variable "hub_virtual_network_id" {
+  type        = string
+  description = "The resource ID of the hub virtual network. Used as fallback when hub_and_spoke_vnet module is not deployed."
+  default     = null
+}
+
+variable "hub_virtual_network_name" {
+  type        = string
+  description = "The name of the hub virtual network. Used as fallback when hub_and_spoke_vnet module is not deployed."
+  default     = null
+}
+
+variable "hub_virtual_network_resource_group_name" {
+  type        = string
+  description = "The resource group name of the hub virtual network. Used as fallback when hub_and_spoke_vnet module is not deployed."
+  default     = null
+}
+
+variable "plan_service_principal_object_id" {
+  type        = string
+  description = "The Object ID of the Plan Service Principal used for Terraform Plan operations. This principal will be granted Owner role on Subscription Aliases for read access."
+  default     = null
+}
