@@ -158,7 +158,8 @@ resource "azapi_resource" "virtual_network" {
   depends_on = [
     azapi_resource.resource_group,
     azurerm_subscription.this,
-    azapi_resource_action.register_network_provider
+    azapi_resource_action.register_network_provider,
+    module.management_groups
   ]
 }
 
